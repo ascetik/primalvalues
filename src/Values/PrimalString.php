@@ -85,11 +85,46 @@ class PrimalString implements PrimalValue
         return $this;
     }
 
+    public function replaceAll(string|array $regex, string|self|array $replacement): self
+    {
+        if ($replacement instanceof self) {
+            $replacement = $replacement->value();
+        }
+        if (is_array($replacement)) {
+            $replacement = array_map(
+                function (string|self $str) {
+                    return $str instanceof self
+                        ? $str->value()
+                        : $str;
+                },
+                $replacement
+            );
+        }
+        return Maybe::some(preg_replace($regex, $replacement, $this->value))
+            ->then(function (string $result) {
+                return $this->equals($result)
+                    ? $this
+                    : new self($result);
+            })
+            ->otherwise($this)
+            ->value();
+    }
+
+    public function split(string $regex): array
+    {
+        $split = preg_split($regex, $this->value);
+        var_dump($split);
+        return Maybe::some($split)
+            ->then(fn (array $arr) => $arr)
+            ->otherwise([])
+            ->value();
+    }
 
     public function value(): string
     {
         return $this->value;
     }
+
 
     /**
      * @param string|self $string
