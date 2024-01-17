@@ -51,6 +51,20 @@ class PrimalString implements PrimalValue
         return $maybe->value();
     }
 
+    public function isEmpty():bool
+    {
+        return empty($this->value);
+    }
+
+    public function lastIndexOf(string|self $sequence): int
+    {
+        $maybe = $this->backToString($sequence)
+            ->then(fn ($string) => strrpos($this->value, $string))
+            ->then(fn (int $index) => $index)
+            ->otherwise(-1);
+        return $maybe->value();
+    }
+
     public function value(): string
     {
         return $this->value;
