@@ -64,6 +64,17 @@ class PrimalStringTest extends TestCase
         $this->assertFalse($hello->contains($unexpected));
     }
 
+    public function testCheckForEqualityWithString()
+    {
+        $hello = PrimalString::of('hello');
+        $this->assertTrue($hello->equals('hello'));
+    }
+
+    public function testCheckForEqualityWithPrimalString()
+    {
+        $hello = PrimalString::of('hello');
+        $this->assertTrue($hello->equals($hello));
+    }
 
 
 }

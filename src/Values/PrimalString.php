@@ -33,6 +33,21 @@ class PrimalString implements PrimalValue
         return str_contains($this->value, $this->backToString($string)->value());
     }
 
+    public function equals(mixed $value): bool
+    {
+        return When::ever($value instanceof self)
+            ->either(fn (self $string) => $this->value == $string->value, $value)
+            ->or(fn () => $this->value === $value, $value)
+            ->try()
+            ->value();
+
+    }
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
     /**
      * @param string|self $string
      *
@@ -43,16 +58,6 @@ class PrimalString implements PrimalValue
         return When::ever($string instanceof self)
             ->then(fn (self $primal) => $primal->value(), $string)
             ->otherwise($string);
-    }
-
-    public function equals(mixed $value): bool
-    {
-        return $this->value === $value;
-    }
-
-    public function value(): string
-    {
-        return $this->value;
     }
 
     public static function of(string $value): self
