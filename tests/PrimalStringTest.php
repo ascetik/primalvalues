@@ -44,7 +44,7 @@ class PrimalStringTest extends TestCase
     public function testGetCharacterAtGivenPosition()
     {
         $hello = PrimalString::of('hello');
-        $this->assertSame('e',$hello->charAt(1));
+        $this->assertSame('e', $hello->charAt(1));
         $this->assertNull($hello->charAt(8));
     }
 
@@ -92,5 +92,24 @@ class PrimalStringTest extends TestCase
         $this->assertEquals(-1, $hello->indexOf(PrimalString::of('any')));
     }
 
+    public function testLastIndexOf()
+    {
+        $hello = PrimalString::of('hello');
+        $this->assertEquals(3, $hello->lastIndexOf(PrimalString::of('l')));
+        $this->assertEquals(-1, $hello->lastIndexOf(PrimalString::of('any')));
+    }
 
+    public function testReplaceChunkWithAString()
+    {
+        $example = PrimalString::of('this is just a test');
+        $replace = $example->replace('just', 'only');
+        $this->assertSame('this is only a test', $replace->value());
+    }
+
+    public function testReplaceChunkWithAPrimalString()
+    {
+        $example = PrimalString::of('this is just a test');
+        $replace = $example->replace(PrimalString::of('just a test'), PrimalString::of('a try'));
+        $this->assertSame('this is a try', $replace->value());
+    }
 }

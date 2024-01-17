@@ -51,7 +51,7 @@ class PrimalString implements PrimalValue
         return $maybe->value();
     }
 
-    public function isEmpty():bool
+    public function isEmpty(): bool
     {
         return empty($this->value);
     }
@@ -64,6 +64,27 @@ class PrimalString implements PrimalValue
             ->otherwise(-1);
         return $maybe->value();
     }
+
+    public function length(): int
+    {
+        return strlen($this->value);
+    }
+
+    public function matches(string $regex): bool
+    {
+        return (bool) preg_match($regex, $this->value);
+    }
+
+    public function replace(string|self $oldStr, string|self $newStr): self
+    {
+        $oldStr = $this->backToString($oldStr)->value();
+        $newStr = $this->backToString($newStr)->value();
+        if ($this->contains($oldStr)) {
+            return new self(str_replace($oldStr, $newStr, $this->value));
+        }
+        return $this;
+    }
+
 
     public function value(): string
     {
