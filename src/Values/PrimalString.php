@@ -33,6 +33,11 @@ class PrimalString implements PrimalValue
         return str_contains($this->value, $this->backToString($string)->value());
     }
 
+    public function endsWith(string|self $string): bool
+    {
+        return str_ends_with($this->value, $this->backToString($string)->value());
+    }
+
     public function equals(mixed $value): bool
     {
         return When::ever($value instanceof self)
@@ -87,20 +92,15 @@ class PrimalString implements PrimalValue
 
     public function replaceAll(string|array $regex, string|self|array $replacement): self
     {
-        if ($replacement instanceof self) {
-            $replacement = $replacement->value();
-        }
-        if (is_array($replacement)) {
-            $replacement = array_map(
-                function (string|self $str) {
-                    return $str instanceof self
-                        ? $str->value()
-                        : $str;
-                },
+        $replace = match (true) {
+            $replacement instanceof self => $replacement->value(),
+            is_array($replacement) => array_map(
+                fn (string|self $str) => $this->backToString($str)->value(),
                 $replacement
-            );
-        }
-        return Maybe::some(preg_replace($regex, $replacement, $this->value))
+            ),
+            default => $replacement
+        };
+        return Maybe::some(preg_replace($regex, $replace, $this->value))
             ->then(function (string $result) {
                 return $this->equals($result)
                     ? $this
@@ -112,12 +112,22 @@ class PrimalString implements PrimalValue
 
     public function split(string $regex): array
     {
-        $split = preg_split($regex, $this->value);
-        var_dump($split);
-        return Maybe::some($split)
+        return Maybe::some(preg_split($regex, $this->value))
             ->then(fn (array $arr) => $arr)
             ->otherwise([])
             ->value();
+    }
+
+
+    public function startsWith(string|self $string): bool
+    {
+        return str_starts_with($this->value, $this->backToString($string)->value());
+    }
+
+    public function subString(int $startIndex, ?int $length = null):self
+    {
+        $sub = substr($this->value, $startIndex,$length);
+        return new self($sub);
     }
 
     public function value(): string

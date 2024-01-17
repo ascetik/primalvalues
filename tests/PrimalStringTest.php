@@ -137,14 +137,14 @@ class PrimalStringTest extends TestCase
     public function testTryToReplaceMatchingChunksWithAnArray()
     {
         $example = PrimalString::of('this is just a try for a test');
-        $replace = $example->replaceAll(['/just/','/a test/'], ['only','an experience']);
+        $replace = $example->replaceAll(['/just/', '/a test/'], ['only', 'an experience']);
         $this->assertSame('this is only a try for an experience', $replace->value());
     }
 
     public function testTryToReplaceMatchingChunksWithAnArrayOfPrimalStrings()
     {
         $example = PrimalString::of('this is another try once again');
-        $replace = $example->replaceAll(['/th/','/again/'], [PrimalString::of('z'),PrimalString::of('for all')]);
+        $replace = $example->replaceAll(['/th/', '/again/'], [PrimalString::of('z'), PrimalString::of('for all')]);
         $this->assertSame('zis is anozer try once for all', $replace->value());
     }
 
@@ -153,5 +153,22 @@ class PrimalStringTest extends TestCase
         $example = PrimalString::of('there is another test that is pissing his own history');
         $split = $example->split('/is/');
         $this->assertCount(6, $split);
+    }
+
+    public function testSplittingAPrimalStringWithUnmatchingRegex()
+    {
+        $example = PrimalString::of('testing again');
+        $split = $example->split('/as/');
+        var_dump($split);
+        $this->assertCount(1, $split);
+    }
+
+    public function testMakeAChunkFromAPrimalString()
+    {
+        $example = PrimalString::of('Lorem ipsum, dolor sit amet consectetur adipisicing elit.');
+        $chunk = $example->subString(6);
+        $this->assertSame('ipsum, dolor sit amet consectetur adipisicing elit.', $chunk->value());
+        $secondChunk = $example->subString(8, 10);
+        $this->assertSame('sum, dolor', $secondChunk->value());
     }
 }
