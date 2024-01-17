@@ -171,4 +171,21 @@ class PrimalStringTest extends TestCase
         $secondChunk = $example->subString(8, 10);
         $this->assertSame('sum, dolor', $secondChunk->value());
     }
+
+    public function testTrimAString()
+    {
+        $string = PrimalString::of('/about ');
+        $about = $string->trim();
+        $this->assertSame('/about', $about->value());
+        $name = $about->trim('/');
+        $this->assertSame('about', $name->value());
+    }
+
+    public function testGetAnArrayWithAllLettersOfAString()
+    {
+        $hello = PrimalString::of('hello');
+        $letters = $hello->toArray();
+        $this->assertContainsOnlyInstancesOf(PrimalString::class, $letters);
+        $this->assertCount(5, $letters);
+    }
 }

@@ -124,17 +124,45 @@ class PrimalString implements PrimalValue
         return str_starts_with($this->value, $this->backToString($string)->value());
     }
 
-    public function subString(int $startIndex, ?int $length = null):self
+    public function subString(int $startIndex, ?int $length = null): self
     {
-        $sub = substr($this->value, $startIndex,$length);
+        $sub = substr($this->value, $startIndex, $length);
         return new self($sub);
+    }
+
+    /**
+     * @return self[]
+     */
+    public function toArray(): array
+    {
+        return array_map(
+            fn (string $letter) => new self($letter),
+            str_split($this->value)
+        );
+    }
+
+    public function toLowerCase(): self
+    {
+        return new self(strtolower($this->value));
+    }
+
+    public function toUpperCase(): self
+    {
+        return new self(strtoupper($this->value));
+    }
+
+    public function trim(string|self|null $characters = null)
+    {
+        $maybe = When::ever(is_null($characters))
+            ->either(fn () => trim($this->value))
+            ->or(fn (string $chars) => trim($this->value, $this->backToString($chars)->value()), $characters);
+        return new self($maybe->value());
     }
 
     public function value(): string
     {
         return $this->value;
     }
-
 
     /**
      * @param string|self $string
