@@ -44,8 +44,8 @@ class PrimalStringTest extends TestCase
     public function testGetCharacterAtGivenPosition()
     {
         $hello = PrimalString::of('hello');
-        $this->assertSame('e', $hello->charAt(1));
-        $this->assertNull($hello->charAt(8));
+        $this->assertSame('e', $hello->charAt(1)->value());
+        $this->assertEmpty($hello->charAt(8)->value());
     }
 
     public function testCheckIfValueContainsString()
@@ -159,7 +159,7 @@ class PrimalStringTest extends TestCase
     {
         $example = PrimalString::of('testing again');
         $split = $example->split('/as/');
-        var_dump($split);
+        // var_dump($split);
         $this->assertCount(1, $split);
     }
 

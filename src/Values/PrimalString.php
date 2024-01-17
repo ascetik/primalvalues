@@ -14,10 +14,10 @@ class PrimalString implements PrimalValue
     {
     }
 
-    public function charAt(int $index): ?string
+    public function charAt(int $index): self
     {
         $chars = str_split($this->value);
-        return $chars[$index] ?? null;
+        return new self($chars[$index] ?? '');
     }
 
     public function concat(string|self $string): self
@@ -80,27 +80,21 @@ class PrimalString implements PrimalValue
         return (bool) preg_match($regex, $this->value);
     }
 
-    public function replace(string|self $oldStr, string|self $newStr): self
+    public function replace(string|self|array $oldStr, string|self|array $newStr): self
     {
-        $oldStr = $this->backToString($oldStr)->value();
-        $newStr = $this->backToString($newStr)->value();
-        if ($this->contains($oldStr)) {
+        $oldStr = $this->handleReplacement($oldStr);
+        $newStr = $this->handleReplacement($newStr);
             return new self(str_replace($oldStr, $newStr, $this->value));
-        }
-        return $this;
     }
 
     public function replaceAll(string|array $regex, string|self|array $replacement): self
     {
-        $replace = match (true) {
-            $replacement instanceof self => $replacement->value(),
-            is_array($replacement) => array_map(
-                fn (string|self $str) => $this->backToString($str)->value(),
-                $replacement
-            ),
-            default => $replacement
-        };
-        return Maybe::some(preg_replace($regex, $replace, $this->value))
+        $replaced = preg_replace(
+            $regex,
+            $this->handleReplacement($replacement),
+            $this->value
+        );
+        return Maybe::some($replaced)
             ->then(function (string $result) {
                 return $this->equals($result)
                     ? $this
@@ -109,7 +103,6 @@ class PrimalString implements PrimalValue
             ->otherwise($this)
             ->value();
     }
-
     public function split(string $regex): array
     {
         return Maybe::some(preg_split($regex, $this->value))
@@ -162,6 +155,19 @@ class PrimalString implements PrimalValue
     public function value(): string
     {
         return $this->value;
+    }
+
+
+    private function handleReplacement(string|array|self $replacement): array|string
+    {
+        return match (true) {
+            $replacement instanceof self => $replacement->value(),
+            is_array($replacement) => array_map(
+                fn (string|self $str) => $this->backToString($str)->value(),
+                $replacement
+            ),
+            default => $replacement
+        };
     }
 
     /**
