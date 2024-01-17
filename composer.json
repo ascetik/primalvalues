@@ -22,5 +22,7 @@
             "email": "ascetik@free.fr"
         }
     ],
-    "require": {}
+    "require": {
+        "ascetik/hypothetik": "^0.3.0"
+    }
 }
