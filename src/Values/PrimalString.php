@@ -40,7 +40,15 @@ class PrimalString implements PrimalValue
             ->or(fn () => $this->value === $value, $value)
             ->try()
             ->value();
+    }
 
+    public function indexOf(string|self $sequence): int
+    {
+        $maybe = $this->backToString($sequence)
+            ->then(fn ($string) => strpos($this->value, $string))
+            ->then(fn (int $index) => $index)
+            ->otherwise(-1);
+        return $maybe->value();
     }
 
     public function value(): string

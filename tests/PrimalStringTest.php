@@ -76,5 +76,21 @@ class PrimalStringTest extends TestCase
         $this->assertTrue($hello->equals($hello));
     }
 
+    public function testIndexOfAStringChunk()
+    {
+        $hello = PrimalString::of('hello');
+        $this->assertEquals(2, $hello->indexOf('ll'));
+        $this->assertEquals(4, $hello->indexOf('o'));
+        $this->assertEquals(-1, $hello->indexOf('any'));
+    }
+
+    public function testIndexOfAPrimalStringChunk()
+    {
+        $hello = PrimalString::of('hello');
+        $this->assertEquals(0, $hello->indexOf(PrimalString::of('h')));
+        $this->assertEquals(3, $hello->indexOf(PrimalString::of('lo')));
+        $this->assertEquals(-1, $hello->indexOf(PrimalString::of('any')));
+    }
+
 
 }
