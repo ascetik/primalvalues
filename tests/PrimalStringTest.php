@@ -47,4 +47,23 @@ class PrimalStringTest extends TestCase
         $this->assertSame('e',$hello->charAt(1));
         $this->assertNull($hello->charAt(8));
     }
+
+    public function testCheckIfValueContainsString()
+    {
+        $hello = PrimalString::of('hello');
+        $this->assertTrue($hello->contains('llo'));
+        $this->assertFalse($hello->contains('hi'));
+    }
+
+    public function testCheckIfValueContainsPrimalString()
+    {
+        $hello = PrimalString::of('hello');
+        $expected = PrimalString::of('llo');
+        $unexpected = PrimalString::of('hi');
+        $this->assertTrue($hello->contains($expected));
+        $this->assertFalse($hello->contains($unexpected));
+    }
+
+
+
 }

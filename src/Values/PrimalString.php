@@ -14,7 +14,7 @@ class PrimalString implements PrimalValue
     {
     }
 
-    public function charAt(int $index):?string
+    public function charAt(int $index): ?string
     {
         $chars = str_split($this->value);
         return $chars[$index] ?? null;
@@ -22,20 +22,23 @@ class PrimalString implements PrimalValue
 
     public function concat(string|self $string): self
     {
-        // $phrase = $this->value;
         $str = $this->backToString($string)
             ->then(fn (string $str) => $this->value . $str)
             ->value();
         return new self($str);
     }
 
+    public function contains(string|self $string): bool
+    {
+        return str_contains($this->value, $this->backToString($string)->value());
+    }
 
     /**
      * @param string|self $string
      *
      * @return Maybe<string>
      */
-    private function backToString(string|self $string):Maybe
+    private function backToString(string|self $string): Maybe
     {
         return When::ever($string instanceof self)
             ->then(fn (self $primal) => $primal->value(), $string)
@@ -52,7 +55,7 @@ class PrimalString implements PrimalValue
         return $this->value;
     }
 
-    public static function of(string $value):self
+    public static function of(string $value): self
     {
         return new self($value);
     }
