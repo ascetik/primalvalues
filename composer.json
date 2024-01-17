@@ -11,11 +11,18 @@
             "Ascetik\\Primalvalues\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Ascetik\\Primalvalues\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "ascetik",
             "email": "ascetik@free.fr"
         }
     ],
-    "require": {}
+    "require": {
+        "ascetik/hypothetik": "^0.3.0"
+    }
 }
