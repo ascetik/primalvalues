@@ -3,7 +3,7 @@
     <testsuites>
         <testsuite name="Unit Scale">
             <file>tests/PrimalStringTest.php</file>
-            <file>tests/IntegerTest.php</file>
+            <file>tests/NumerikTest.php</file>
         </testsuite>
     </testsuites>
     <php>

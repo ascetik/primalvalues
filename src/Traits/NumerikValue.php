@@ -6,7 +6,7 @@ namespace Ascetik\Primalvalues\Traits;
 
 use Ascetik\Hypothetik\Core\When;
 use Ascetik\Hypothetik\Core\Maybe;
-use Ascetik\Primalvalues\Types\Numerik;
+use Ascetik\Primalvalues\Values\Numerik;
 
 /**
  * @property int|float $value

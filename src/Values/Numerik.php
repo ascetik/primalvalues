@@ -10,6 +10,11 @@ use Ascetik\Primalvalues\Types\PrimalValue;
 
 class Numerik implements PrimalValue
 {
+    public static function of(int|float $number): self
+    {
+        return new self($number);
+    }
+
     public function add(int|Numerik $number): self
     {
         $sum = $this->value + $this->ensureValue($number)->value();
@@ -81,11 +86,6 @@ class Numerik implements PrimalValue
     public function value(): int|float
     {
         return $this->value;
-    }
-
-    public static function of(int|float $number): self
-    {
-        return new self($number);
     }
 
     private function __construct(private readonly int|float $value)
