@@ -17,25 +17,30 @@ class PrimalString implements PrimalValue
     public function charAt(int $index): self
     {
         $chars = str_split($this->value);
-        return new self($chars[$index] ?? '');
+        return When::ever($index < 0)
+            ->then(fn (array $chrs) => array_reverse($chrs), $chars)
+            ->otherwise($chars)
+            ->then(fn (array $characters) => new self($characters[abs($index)] ?? ''))
+            ->value();
+        // return new self($chars[abs($index)] ?? '');
     }
 
-    public function concat(string|self $string): self
+    public function concat(string|self $sequence): self
     {
-        $str = $this->backToString($string)
+        $str = $this->backToString($sequence)
             ->then(fn (string $str) => $this->value . $str)
             ->value();
         return new self($str);
     }
 
-    public function contains(string|self $string): bool
+    public function contains(string|self $sequence): bool
     {
-        return str_contains($this->value, $this->backToString($string)->value());
+        return str_contains($this->value, $this->backToString($sequence)->value());
     }
 
-    public function endsWith(string|self $string): bool
+    public function endsWith(string|self $sequence): bool
     {
-        return str_ends_with($this->value, $this->backToString($string)->value());
+        return str_ends_with($this->value, $this->backToString($sequence)->value());
     }
 
     public function equals(mixed $value): bool
@@ -84,7 +89,7 @@ class PrimalString implements PrimalValue
     {
         $oldStr = $this->handleReplacement($oldStr);
         $newStr = $this->handleReplacement($newStr);
-            return new self(str_replace($oldStr, $newStr, $this->value));
+        return new self(str_replace($oldStr, $newStr, $this->value));
     }
 
     public function replaceAll(string|array $regex, string|self|array $replacement): self
@@ -103,6 +108,7 @@ class PrimalString implements PrimalValue
             ->otherwise($this)
             ->value();
     }
+
     public function split(string $regex): array
     {
         return Maybe::some(preg_split($regex, $this->value))
@@ -117,10 +123,14 @@ class PrimalString implements PrimalValue
         return str_starts_with($this->value, $this->backToString($string)->value());
     }
 
-    public function subString(int $startIndex, ?int $length = null): self
+    public function subString(int $offset, ?int $length = null): self
     {
-        $sub = substr($this->value, $startIndex, $length);
-        return new self($sub);
+        $sub = substr($this->value, $offset, Maybe::some($length)->value());
+        return Maybe::some($sub)
+
+            ->then(self::of(...))
+            ->otherwise(self::empty())
+            ->value();
     }
 
     /**
@@ -182,8 +192,13 @@ class PrimalString implements PrimalValue
             ->otherwise($string);
     }
 
-    public static function of(string $value): self
+    public static function empty(): self
     {
-        return new self($value);
+        return new self('');
+    }
+
+    public static function of(string $sequence): self
+    {
+        return new self($sequence);
     }
 }

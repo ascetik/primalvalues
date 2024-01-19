@@ -45,6 +45,7 @@ class PrimalStringTest extends TestCase
     {
         $hello = PrimalString::of('hello');
         $this->assertSame('e', $hello->charAt(1)->value());
+        $this->assertSame('l', $hello->charAt(-1)->value());
         $this->assertEmpty($hello->charAt(8)->value());
     }
 
@@ -170,6 +171,25 @@ class PrimalStringTest extends TestCase
         $this->assertSame('ipsum, dolor sit amet consectetur adipisicing elit.', $chunk->value());
         $secondChunk = $example->subString(8, 10);
         $this->assertSame('sum, dolor', $secondChunk->value());
+    }
+
+    public function testSubstringAcceptsNegativeLength()
+    {
+        $example = PrimalString::of('Lorem ipsum, dolor sit amet consectetur adipisicing elit.');
+        $chunk = $example->subString(6, -6);
+        $this->assertSame('ipsum, dolor sit amet consectetur adipisicing', $chunk->value());
+    }
+
+    public function testMakeAChunkFromPrimalStringUsingNegativeIndex()
+    {
+        $example = PrimalString::of('Lorem ipsum, dolor sit amet consectetur adipisicing elit.');
+        $chunk = $example->subString(-6);
+        $this->assertSame(' elit.', $chunk->value());
+        $secondChunk = $example->subString(-17, 11);
+
+        $this->assertSame('adipisicing', $secondChunk->value());
+        $thirdChunk = $example->subString(-17, -9);
+        $this->assertSame('adipisic', $thirdChunk->value());
     }
 
     public function testTrimAString()
