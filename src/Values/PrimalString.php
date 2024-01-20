@@ -180,6 +180,16 @@ class PrimalString implements PrimalValue
         };
     }
 
+    public static function empty(): self
+    {
+        return new self('');
+    }
+
+    public static function of(string $sequence): self
+    {
+        return new self($sequence);
+    }
+
     /**
      * @param string|self $string
      *
@@ -190,15 +200,5 @@ class PrimalString implements PrimalValue
         return When::ever($string instanceof self)
             ->then(fn (self $primal) => $primal->value(), $string)
             ->otherwise($string);
-    }
-
-    public static function empty(): self
-    {
-        return new self('');
-    }
-
-    public static function of(string $sequence): self
-    {
-        return new self($sequence);
     }
 }
