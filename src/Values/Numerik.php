@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * This is part of the ascetik/primalvalues package
+ *
+ * @package    PrimalValues
+ * @category   Primitive Value Object
+ * @license    https://opensource.org/license/mit/  MIT License
+ * @copyright  Copyright (c) 2023, Vidda
+ * @author     Vidda <vidda@ascetik.fr>
+ */
+
 declare(strict_types=1);
 
 namespace Ascetik\Primalvalues\Values;
@@ -8,6 +18,11 @@ use Ascetik\Hypothetik\Core\When;
 use Ascetik\Hypothetik\Core\Maybe;
 use Ascetik\Primalvalues\Types\PrimalValue;
 
+/**
+ * Provide methods to extend numeric values
+ *
+ * @version 1.0.0
+ */
 class Numerik implements PrimalValue
 {
     public static function of(int|float $number): self
@@ -15,7 +30,7 @@ class Numerik implements PrimalValue
         return new self($number);
     }
 
-    public static function zero():self
+    public static function zero(): self
     {
         return new self(0);
     }
@@ -68,7 +83,7 @@ class Numerik implements PrimalValue
         return $this->add($increase);
     }
 
-    public function isZero():bool
+    public function isZero(): bool
     {
         return $this->value === 0;
     }

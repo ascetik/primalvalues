@@ -14,8 +14,14 @@ declare(strict_types=1);
 
 namespace Ascetik\Primalvalues\Types;
 
+/**
+ * Generic behavior of a
+ * primitive type wrapper
+ *
+ * @version 1.0.0
+ */
 interface PrimalValue
 {
     public function equals(mixed $value): bool;
-    public function value(): string|int|float;
+    public function value(): mixed;
 }

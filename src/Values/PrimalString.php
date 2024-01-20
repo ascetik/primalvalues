@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * This is part of the ascetik/primalvalues package
+ *
+ * @package    PrimalValues
+ * @category   Primitive Value Object
+ * @license    https://opensource.org/license/mit/  MIT License
+ * @copyright  Copyright (c) 2023, Vidda
+ * @author     Vidda <vidda@ascetik.fr>
+ */
+
 declare(strict_types=1);
 
 namespace Ascetik\Primalvalues\Values;
@@ -8,6 +18,11 @@ use Ascetik\Hypothetik\Core\Maybe;
 use Ascetik\Hypothetik\Core\When;
 use Ascetik\Primalvalues\Types\PrimalValue;
 
+/**
+ * Provide methods to extend strings
+ *
+ * @version 1.0.0
+ */
 class PrimalString implements PrimalValue
 {
     private function __construct(private readonly string $value)
