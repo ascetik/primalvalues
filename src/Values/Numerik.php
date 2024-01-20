@@ -15,7 +15,12 @@ class Numerik implements PrimalValue
         return new self($number);
     }
 
-    public function add(int|Numerik $number): self
+    public static function zero():self
+    {
+        return new self(0);
+    }
+
+    public function add(int|float|self $number): self
     {
         $sum = $this->value + $this->ensureValue($number)->value();
         return new self($sum);
@@ -26,20 +31,25 @@ class Numerik implements PrimalValue
         return $this->power(3);
     }
 
-    public function decrement(int|self $increase = 1): self
+    public function decrement(int|float|self $decrease = 1): self
     {
-        $value = $this->value - $this->ensureValue($increase)->value();
-        return new self($value);
+        return $this->subtract($decrease);
     }
 
-    public function divide(int|Numerik $number): self
+    public function divides(int|float|self $dividend): self
     {
-        $quotient = $this->ensureValue($number)
-            ->then(fn (int|float $num) => $num != 0)
-            ->then(fn (int|float $num) => $this->value / $num, $number)
-            ->otherwise(0)
-            ->value();
-        return self::of($quotient);
+        if ($this->isZero()) {
+            return $this;
+        }
+        return new self($dividend / $this->value);
+    }
+
+    public function dividedBy(int|float|self $divider): self
+    {
+        if ($divider == 0) {
+            return self::zero();
+        }
+        return new self($this->value / $divider);
     }
 
     public function equals(mixed $value): bool
@@ -47,13 +57,23 @@ class Numerik implements PrimalValue
         return $value === $this->value;
     }
 
-    public function increment(int|self $increase = 1): self
+    public function exposing(int|float|self $number): self
     {
-        $value = $this->value + $this->ensureValue($increase)->value();
+        $value = pow($this->ensureValue($number)->value(), $this->value);
         return new self($value);
     }
 
-    public function multiply(int|Numerik $number): self
+    public function increment(int|float|self $increase = 1): self
+    {
+        return $this->add($increase);
+    }
+
+    public function isZero():bool
+    {
+        return $this->value === 0;
+    }
+
+    public function multiply(int|float|self $number): self
     {
         $product = $this->value * $this->ensureValue($number)->value();
         return new self($product);
@@ -77,10 +97,26 @@ class Numerik implements PrimalValue
         return self::of(sqrt($this->value()));
     }
 
-    public function subtract(int|Numerik $number): self
+    public function subtract(int|float|self $number): self
     {
         $difference = $this->value - $this->ensureValue($number)->value();
         return new self($difference);
+    }
+
+    public function subtractTo(int|float|self $number): self
+    {
+        $difference = $this->ensureValue($number)->value() - $this->value;
+        return new self($difference);
+    }
+
+    public function toFloat(): float
+    {
+        return (float) $this->value;
+    }
+
+    public function toInteger(): int
+    {
+        return (int) $this->value;
     }
 
     public function value(): int|float
@@ -97,10 +133,10 @@ class Numerik implements PrimalValue
      *
      * @return Maybe<int>
      */
-    private function ensureValue(int|float|Numerik $number): Maybe
+    private function ensureValue(int|float|self $number): Maybe
     {
-        return When::ever($number instanceof Numerik)
-            ->then(fn (Numerik $primal) => $primal->value(), $number)
+        return When::ever($number instanceof self)
+            ->then(fn (self $primal) => $primal->value(), $number)
             ->otherwise($number);
     }
 }
